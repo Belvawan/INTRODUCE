@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Achmad Rofi Belvawan</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #047857, #000000);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1s ease-out;
+    }
+
+    .wrapper.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Intro Screen */
+    .intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #047857, #000000);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #38ef7d;
+      z-index: 9999;
+      text-align: center;
+    }
+
+    .word {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.6s ease;
+    }
+
+    .word.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .intro-screen.hidden {
+      display: none;
+    }
+
+    /* Efek Bintang / Sparkle */
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkleAnim 1.5s ease-out forwards;
+    }
+
+    @keyframes sparkleAnim {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* Animasi Hujan Realistis - Di belakang semua konten */
+    .rain {
+      position: fixed;
+      top: -50px;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .drop {
+      position: absolute;
+      width: 1px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.3);
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(20deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(800px) rotate(20deg);
+        opacity: 0;
+      }
+    }
+
+    /* Kotak Informasi */
+    .container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 255, 0, 0.2);
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      text-align: justify;
+      box-shadow: 0 8px 32px rgba(0, 255, 0, 0.2);
+      transition: transform 0.3s ease;
+      margin-bottom: 2rem;
+    }
+
+    .container:hover {
+      animation: pulse 1s infinite;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #38ef7d;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #dcdde1;
+      margin-bottom: 1rem;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+
+    .highlight-green {
+      color: #60c991;
+      font-weight: 700;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.4rem 0.8rem;
+      background-color: #0fbc72;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #0fb97a;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02) rotate(0.5deg); }
+      100% { transform: scale(1); }
+    }
+
+    /* Timeline Title Section */
+    .timeline-title-section {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #38ef7d;
+      margin: 2rem 0 1rem;
+      font-weight: bold;
+    }
+
+    /* Timeline Perjalanan */
+    .timeline {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      padding: 0 1rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 40px;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.4);
+      border-left: 2px solid #0be881;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+    }
+
+    .timeline-icon {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -15px;
+      background: #047857;
+      border: 2px solid #0be881;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timeline-icon svg {
+      fill: #0be881;
+      width: 16px;
+      height: 16px;
+    }
+
+    .timeline-title {
+      font-weight: bold;
+      color: #38ef7d;
+    }
+
+    .timeline-date {
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+    }
+
+    .timeline-desc {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #dcdde1;
+    }
+
+    /* Copyright */
+    footer {
+      text-align: center;
+      margin: 2rem 0 1rem;
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Intro Screen -->
+  <div class="intro-screen" id="intro">
+    <div id="text-container">
+      <div class="word" id="word1">INTRODUCE</div>
+      <div class="word" id="word2">BELVAWAN</div>
+    </div>
+  </div>
+
+  <!-- Efek Partikel Bintang -->
+  <script>
+    function createSparkle() {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+
+      sparkle.style.left = Math.random() * window.innerWidth + 'px';
+      sparkle.style.top = Math.random() * window.innerHeight + 'px';
+
+      document.body.appendChild(sparkle);
+
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1500);
+    }
+
+    function animateSparkles() {
+      setInterval(() => {
+        if (!document.getElementById('intro').classList.contains('hidden')) {
+          createSparkle();
+        }
+      }, 200);
+    }
+
+    animateSparkles();
+  </script>
+
+  <!-- Animasi Hujan -->
+  <div class="rain" id="rain-container"></div>
+
+  <!-- Wrapper Konten Utama -->
+  <div class="wrapper" id="main-content">
+
+    <!-- Kotak Informasi -->
+    <div class="container">
+      <h1>Hai, Kenalin Aku Belva!</h1>
+      <p>
+        Halo! Namaku <strong>Achmad Rofi Belvawan</strong>, tapi kebanyakan orang kenal aku sebagai <strong>Belva</strong>. Aku sekarang berusia <span class="highlight-green">17 tahun</span> dan duduk di bangku kelas 11 di <strong>SMAN 1 TEGAL</strong>.
+      </p>
+      <p>
+        Di luar kesibukan sekolah, aku juga aktif mengelola toko top up-ku sendiri yang bernama <strong>Bellbloxstore</strong>. Di sini aku nyediain banyak produk digital top up dengan harga bersahabat dan proses cepat.
+      </p>
+      <p>
+        Aku percaya, usia muda bukan halangan buat <strong>berkarya</strong> dan <strong>produktif</strong>. Justru dari sekarang, aku pengen terus belajar, berkembang, dan berbagi manfaat lewat hal-hal yang aku jalani.
+      </p>
+
+      <!-- Tombol Group -->
+      <div class="btn-group">
+        <a href="https://www.instagram.com/bellbloxstore_id?igsh=MTVkaHp5c21lN280bg==" target="_blank" class="btn">BellbloxStore</a>
+        <a href=" https://api.whatsapp.com/send/?phone=6285190070508&text&type=phone_number&app_absent=0&wame_ctl=1" target="_blank" class="btn">WA CS</a>
+      </div>
+    </div>
+
+    <!-- Judul Timeline -->
+    <div class="timeline-title-section">TIMELINE BELLBLOXSTORE</div>
+
+    <!-- Timeline Perjalanan -->
+    <section class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="timeline-title">Membuat BellbloxStore</div>
+        <div class="timeline-date">2022</div>
+        <div class="timeline-desc">
+          Pada tahun 2022, saya mendapatkan ide saat memikirkan betapa seringnya saya melakukan top-up game. Dari situ, saya memutuskan untuk membuat sebuah toko digital, dan mulai dari Roblox currency seperti Robux.
+        </div>
+      </div>
+
+      <!-- Mengembangkan Pelayanan -->
+      <div class="timeline-item">
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        </div>
+        <div class="timeline-title">Mengembangkan Pelayanan</div>
+        <div class="timeline-date">Akhir 2022</div>
+        <div class="timeline-desc">
+          Setelah kurang lebih 5 bulan berjalan, saya mulai menerima masukan dari pelanggan. Hal ini membawa saya pada penambahan beberapa layanan dan jenis game yang bisa dipilih oleh pembeli.
+        </div>
+      </div>
+
+      <!-- Tutup Sementara -->
+      <div class="timeline-item">
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M10 9V3.5a1 1 0 0 1 1.5-.84L19 5.5a1 1 0 0 1 .5 1.5V17a1 1 0 0 1-.5 1.5l-7.5 2.84A1 1 0 0 1 10 19.5V14M10 14H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10z"/></svg>
+        </div>
+        <div class="timeline-title">Tutup Sementara</div>
+        <div class="timeline-date">2023 - Awal 2024</div>
+        <div class="timeline-desc">
+          Ada masa di mana bisnis ini tidak memberikan hasil yang cukup memadai, sehingga saya memutuskan untuk menutup sementara toko sambil merenungkan apakah akan melanjutkannya atau tidak.
+        </div>
+      </div>
+
+      <!-- Kembali Membuka Toko -->
+      <div class="timeline-item">
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4M10 14L6 10m0 0l4-4m-4 4h12"/></svg>
+        </div>
+        <div class="timeline-title">Kembali Membuka Toko</div>
+        <div class="timeline-date">Pertengahan 2024</div>
+        <div class="timeline-desc">
+          Setelah merenung cukup lama dan didukung oleh keluarga serta teman, saya memutuskan untuk kembali membuka toko dan merombak konsep agar lebih baik dari sebelumnya.
+        </div>
+      </div>
+
+      <!-- Berjalan Sampai Sekarang -->
+      <div class="timeline-item">
+        <div class="timeline-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div class="timeline-title">Berjalan Sampai Sekarang</div>
+        <div class="timeline-date">Saat Ini</div>
+        <div class="timeline-desc">
+          Setelah melewati masa yang panjang, saya yakin dengan arah bisnis ini. Dengan dukungan pelanggan setia, saya terus berinovasi dan meningkatkan layanan demi pengalaman terbaik.
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      &copy;2025 BellbloxStore • Semua Hak Di Lindungi
+    </footer>
+
+  </div>
+
+  <script>
+    // === ANIMASI SATU KATA PER SATU ===
+    const word1 = document.getElementById('word1');
+    const word2 = document.getElementById('word2');
+
+    setTimeout(() => {
+      word1.classList.add('active');
+    }, 500);
+
+    setTimeout(() => {
+      word2.classList.add('active');
+    }, 1500);
+
+    // === FADE OUT SETELAH 4 DETIK ===
+    setTimeout(() => {
+      const intro = document.getElementById('intro');
+      intro.classList.add('hidden');
+      document.getElementById('main-content').classList.add('show');
+    }, 4000); // Durasi total intro: 4 detik
+
+    // === ANIMASI HUJAN ===
+    const container = document.getElementById('rain-container');
+    const numberOfDrops = 300;
+
+    for (let i = 0; i < numberOfDrops; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('drop');
+      drop.style.left = `${Math.random() * window.innerWidth}px`;
+      drop.style.animationDuration = `${Math.random() * 1 + 0.5}s`;
+      drop.style.animationDelay = `${Math.random() * 1}s`;
+      drop.style.width = `${Math.random() * 2 + 1}px`;
+
+      container.appendChild(drop);
+    }
+  </script>
+
+</body>
+</html>
